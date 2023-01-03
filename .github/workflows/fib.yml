@@ -46,7 +46,7 @@ jobs:
           push: true
           buildkit: true
           oci: true
-          tags: radzio2209/fibcalc:${{ github.ref }}.${{ steps.metadata.outputs.tag }}
+          tags: radzio2209/fibcalc:githubaction
       #Przenies cache'a
       - name: Move cache
         run: |
