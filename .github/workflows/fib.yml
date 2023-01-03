@@ -7,10 +7,17 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Set semver tag
-        uses: docker/metadata-action@v1
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
         with:
-          metadata-path: ./.github/metadata.json
+          images: |
+            name/app
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
 
       #Logowanie do Dockerhuba
       - name: Login to DockerHub
