@@ -11,6 +11,14 @@ jobs:
         uses: docker/metadata-action@v1
         with:
           metadata-path: ./.github/metadata.json
+
+      #Logowanie do Dockerhuba
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{secrets.DOCKER_HUB_USERNAME}}
+          password: ${{secrets.DOCKER_HUB_ACCESS_TOKEN}}
+
       - name: Build Docker image
         uses: docker/build-push-action@v2
         with:
@@ -18,10 +26,14 @@ jobs:
           file: Dockerfile
           registry: ghcr.io
           push: true
-          cache-from:
-            - type: registry
-              registry: docker.io
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           platforms: linux/amd64,linux/arm64,darwin/amd64
           buildkit: true
           oci: true
-          tags: student/fibcalc:${{ github.ref }}.${{ steps.metadata.outputs.tag }}
+          tags: radzio2209/fibcalc:${{ github.ref }}.${{ steps.metadata.outputs.tag }}
+      #Przenies cache'a
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
