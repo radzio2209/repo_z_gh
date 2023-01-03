@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+      - name: Set semver tag
+        uses: docker/metadata-action@v1
+        with:
+          metadata-path: ./.github/metadata.json
       - name: Build Docker image
         uses: docker/build-push-action@v2
         with:
@@ -20,5 +24,4 @@ jobs:
           platforms: linux/amd64,linux/arm64,darwin/amd64
           buildkit: true
           oci: true
-          tags: radzio2209/fibcalc:${{ github.sha }}
-
+          tags: student/fibcalc:${{ github.ref }}.${{ steps.metadata.outputs.tag }}
